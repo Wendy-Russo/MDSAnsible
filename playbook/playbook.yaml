@@ -1,0 +1,32 @@
+---
+- name: Installation
+  hosts: web
+  vars_files:
+    - ../vault/vault.yml
+  remote_user: root
+  tasks:
+    - name: Set authorized key in alternate location
+      ansible.posix.authorized_key:
+        user: jules
+        state: present
+        key: "{{ lookup('file', '/home/wendy/.ssh/mdsstart.pub') }}"
+        path: /home/jules/.ssh/authorized_keys
+        manage_dir: false
+    - name: Disallow SSH password authentication
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^PasswordAuthentication"
+        line: "PasswordAuthentication no"
+        state: present
+        validate: sshd -t -f %s
+      notify:
+        - restart sshd
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^ChallengeResponseAuthentication"
+        line: "ChallengeResponseAuthentication no"
+        state: present
+        validate: sshd -t -f %s
+      notify:
+        - restart sshd
+...

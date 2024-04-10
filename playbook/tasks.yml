@@ -1,0 +1,15 @@
+- name: Installation de Git
+  apt: name={{item}} update-cache=yes state=latest
+  with_items:
+    - vim
+    - git
+    - htop
+    - zsh   
+
+
+          lineinfile:
+        dest=/etc/ssh/sshd_config
+        regexp="^ChallengeResponseAuthentication"
+        line="ChallengeResponseAuthentication no"
+        state=present
+        validate: sshd -t -f %s

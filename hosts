@@ -1,0 +1,2 @@
+[web]
+195.35.48.105 ansible_ssh_pass="{{ jules_password }}" ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
